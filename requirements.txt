@@ -1,0 +1,16 @@
+fastapi>=0.103.0
+uvicorn==0.22.0
+python-jose[cryptography]==3.3.0
+passlib[bcrypt]==1.7.4
+python-multipart==0.0.6
+sqlalchemy==2.0.15
+psycopg2-binary==2.9.6
+alembic==1.11.1
+python-dotenv==1.0.0
+pillow==11.2.1
+boto3==1.26.158           # For S3 file storage
+asyncpg==0.30.0
+pydantic>=2.0
+pydantic-settings>=2.0.0
+python-dotenv>=1.0.0
+aiosmtplib==4.0.1
