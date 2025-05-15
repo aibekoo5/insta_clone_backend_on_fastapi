@@ -18,7 +18,7 @@ An Instagram clone with a Fastapi backend. The application supports authenticati
 ### 🔧 Cloning a repository
 ```commandline
 git clone https://github.com/aibekoo5/insta_clone_backend_on_fastapi.git
-cd REPOSITORY_NAME
+cd insta_clone_backend_on_fastapi
 ```
 ### 🐍 Create and activate a virtual environment
 ```commandline
