@@ -5,6 +5,8 @@ from sqlalchemy import select
 from app.models.follow import Follow
 from app.models.user import User
 from app.services.notification import create_notification
+from app.schemas.user import UserOut
+from sqlalchemy import func
 
 async def follow_user(follower_id: int, following_id: int, db: AsyncSession):
     follower = await db.get(User, follower_id)
@@ -53,18 +55,44 @@ async def unfollow_user(follower_id: int, following_id: int, db: AsyncSession):
     await db.commit()
     return {"message": f"Unfollowed user {following_id}"}
 
-async def get_followers(user_id: int, skip: int = 0, limit: int = 10, db: AsyncSession = None):
+async def get_followers(user_id: int, skip: int = 0, limit: int = 10, db: AsyncSession = None, current_user_id: int = None):
     result = await db.execute(
         select(User).join(Follow, Follow.follower_id == User.id)
         .where(Follow.following_id == user_id)
         .offset(skip).limit(limit)
     )
-    return result.scalars().all()
+    users = result.scalars().all()
+    user_out_list = []
+    for user in users:
+        followers_count = await db.scalar(select(func.count()).select_from(Follow).where(Follow.following_id == user.id))
+        following_count = await db.scalar(select(func.count()).select_from(Follow).where(Follow.follower_id == user.id))
+        is_followed = False
+        if current_user_id:
+            is_followed = await db.scalar(select(Follow).where(Follow.follower_id == current_user_id, Follow.following_id == user.id))
+        user_dict = user.model_dump() if hasattr(user, 'model_dump') else dict(user)
+        user_dict["followers_count"] = followers_count
+        user_dict["following_count"] = following_count
+        user_dict["is_followed_by_current_user"] = bool(is_followed)
+        user_out_list.append(UserOut(**user_dict))
+    return user_out_list
 
-async def get_following(user_id: int, skip: int = 0, limit: int = 10, db: AsyncSession = None):
+async def get_following(user_id: int, skip: int = 0, limit: int = 10, db: AsyncSession = None, current_user_id: int = None):
     result = await db.execute(
         select(User).join(Follow, Follow.following_id == User.id)
         .where(Follow.follower_id == user_id)
         .offset(skip).limit(limit)
     )
-    return result.scalars().all()
+    users = result.scalars().all()
+    user_out_list = []
+    for user in users:
+        followers_count = await db.scalar(select(func.count()).select_from(Follow).where(Follow.following_id == user.id))
+        following_count = await db.scalar(select(func.count()).select_from(Follow).where(Follow.follower_id == user.id))
+        is_followed = False
+        if current_user_id:
+            is_followed = await db.scalar(select(Follow).where(Follow.follower_id == current_user_id, Follow.following_id == user.id))
+        user_dict = user.model_dump() if hasattr(user, 'model_dump') else dict(user)
+        user_dict["followers_count"] = followers_count
+        user_dict["following_count"] = following_count
+        user_dict["is_followed_by_current_user"] = bool(is_followed)
+        user_out_list.append(UserOut(**user_dict))
+    return user_out_list

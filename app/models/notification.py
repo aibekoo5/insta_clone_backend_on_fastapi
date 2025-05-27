@@ -11,6 +11,7 @@ class Notification(Base):
     sender_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     notification_type = Column(String(50), nullable=False)
     post_id = Column(Integer, ForeignKey("posts.id"), nullable=True)
+    reel_id = Column(Integer, ForeignKey("reels.id"), nullable=True)
     comment_id = Column(Integer, ForeignKey("comments.id"), nullable=True)
     is_read = Column(Boolean, default=False)
     created_at = Column(DateTime, default=func.now())
@@ -18,4 +19,5 @@ class Notification(Base):
     user = relationship("User", foreign_keys=[user_id], back_populates="notifications")
     sender = relationship("User", foreign_keys=[sender_id])
     post = relationship("Post")
+    reel = relationship("Reel")
     comment = relationship("Comment")

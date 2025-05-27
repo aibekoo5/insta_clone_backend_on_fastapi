@@ -3,14 +3,13 @@ from typing import List, Optional
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.database import get_async_session
-from app.models.post import Post
 from app.schemas.post import PostCreate, PostUpdate, PostOut
 from app.services.post import (
     create_post,
     get_posts_for_user,
-    update_post, delete_post, get_all_posts
+    update_post, delete_post, get_all_posts, get_post_by_id_service
 )
-from app.services.auth import get_current_active_user
+from app.services.auth import get_current_active_user, get_current_admin_user
 from app.models.user import User
 
 
@@ -33,8 +32,13 @@ async def create_new_post(
             detail="You must provide either an image or a video."
         )
     post_data = PostCreate(caption=caption, is_private=is_private)
-    return await create_post(post_data, current_user.id, image, video, db)
-
+    return await create_post(
+        post_data=post_data,
+        user_id=current_user.id,
+        db=db,
+        image_file=image,
+        video_file=video
+    )
 
 
 @router.get("/", response_model=List[PostOut])
@@ -99,7 +103,7 @@ async def update_existing_post(
 @router.delete("/{post_id}", response_model=dict)
 async def delete_existing_post(
         post_id: int,
-        current_user: User = Depends(get_current_active_user),
+        current_user: User = Depends(get_current_admin_user),
         db: AsyncSession = Depends(get_async_session)
 ):
     if current_user.is_admin:

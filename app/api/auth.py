@@ -6,7 +6,6 @@ from fastapi import Body
 from app.database import get_async_session
 from app.schemas.user import UserCreate, UserOut, Token, LoginRequest
 from app.services.auth import (authenticate_user, create_access_token, register_user)
-from app.config import settings
 from fastapi import HTTPException
 from app.utils.password_reset import create_password_reset_token, send_password_reset_email
 from app.schemas.user import PasswordResetRequest, PasswordResetConfirm

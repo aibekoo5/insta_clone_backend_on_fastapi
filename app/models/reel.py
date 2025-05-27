@@ -11,5 +11,9 @@ class Reel(Base):
     caption = Column(Text, nullable=True)
     owner_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     created_at = Column(DateTime, default=func.now())
+    like_count = Column(Integer, default=0, nullable=False)
+    comment_count = Column(Integer, default=0, nullable=False)
 
     owner = relationship("User", back_populates="reels")
+    likes = relationship("Like", back_populates="reel", cascade="all, delete-orphan")
+    comments = relationship("Comment", back_populates="reel", cascade="all, delete-orphan")

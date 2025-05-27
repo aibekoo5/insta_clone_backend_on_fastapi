@@ -71,6 +71,15 @@ async def create_access_token(data: dict, expires_delta: Optional[timedelta] = N
     return jwt.encode(to_encode, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
 
 
+async def get_token_from_request(request: Request):
+    auth_header = request.headers.get("Authorization")
+    if auth_header and auth_header.startswith("Bearer "):
+        return auth_header.split(" ", 1)[1]
+    cookie_token = request.cookies.get("access_token")
+    if cookie_token and cookie_token.startswith("Bearer "):
+        return cookie_token.split(" ", 1)[1]
+    return None
+
 async def get_current_user(request: Request, db: AsyncSession = Depends(get_async_session)):
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,

@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field, HttpUrl, ConfigDict
+from pydantic import BaseModel, Field, AnyUrl, field_validator
 from typing import Optional
 from datetime import datetime
 from app.schemas.user import UserOut
@@ -13,19 +13,22 @@ class PostCreate(PostBase):
 class PostUpdate(PostBase):
     pass
 
+
 class PostOut(PostBase):
     id: int
-    image_url: Optional[HttpUrl]
-    video_url: Optional[HttpUrl]
+    image_url: Optional[AnyUrl] = None
+    video_url: Optional[AnyUrl] = None
     owner_id: int
     created_at: datetime
     like_count: int = 0
     comment_count: int = 0
-    owner: UserOut  # Make sure UserOut includes all required fields
+    owner: UserOut
+    is_liked_by_current_user: Optional[bool] = None
 
-    model_config = ConfigDict(
-        from_attributes=True,
-        json_encoders={
-            datetime: lambda v: v.isoformat()
-        }
-    )
+    @field_validator('image_url', 'video_url', mode='before')
+    def convert_path_to_url(cls, value):
+        if value and isinstance(value, str):
+            if value.startswith('/'):
+                return f"http://localhost:8000{value}"  # Adjust with your actual domain
+            return value
+        return value

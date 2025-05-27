@@ -1,6 +1,7 @@
 from pydantic import BaseModel
 from datetime import datetime
 from app.schemas.user import UserOut
+from typing import Optional
 
 class StoryBase(BaseModel):
     pass

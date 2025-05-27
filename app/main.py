@@ -1,5 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from starlette.staticfiles import StaticFiles
+
 from app.api import (
     auth,
     post,
@@ -11,8 +13,11 @@ from app.api import (
     admin_user, 
     profile
 )
+from app.config import settings
 
 app = FastAPI(title="Insta clone")
+
+app.mount("/static", StaticFiles(directory="static"), name="static")
 
 
 # CORS middleware

@@ -9,11 +9,14 @@ class Comment(Base):
     id = Column(Integer, primary_key=True, index=True)
     content = Column(Text, nullable=False)
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
-    post_id = Column(Integer, ForeignKey("posts.id"), nullable=False)
+    post_id = Column(Integer, ForeignKey("posts.id"), nullable=True)
     parent_id = Column(Integer, ForeignKey("comments.id"), nullable=True)
     created_at = Column(DateTime, default=func.now())
+    reel_id = Column(Integer, ForeignKey("reels.id"), nullable=True)
 
     user = relationship("User", back_populates="comments")
+    owner = user  
     post = relationship("Post", back_populates="comments")
     parent = relationship("Comment", remote_side=[id], back_populates="replies")
     replies = relationship("Comment", back_populates="parent")
+    reel = relationship("Reel", back_populates="comments")

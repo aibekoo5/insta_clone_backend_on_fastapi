@@ -12,6 +12,8 @@ class Settings(BaseSettings):
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
     PASSWORD_RESET_TOKEN_EXPIRE_MINUTES: int = 30
 
+    FRONTEND_URL: str
+    EMAIL_FROM: str
 
     # Database
     DATABASE_URL: str

@@ -1,6 +1,7 @@
 from pydantic import BaseModel, Field, ConfigDict
 from typing import Optional, List
 from datetime import datetime
+from app.schemas.user import UserOut
 
 
 class CommentBase(BaseModel):
@@ -16,9 +17,11 @@ class CommentBrief(BaseModel):
     id: int
     content: str
     user_id: int
-    post_id: int
+    post_id: Optional[int] = None
+    reel_id: Optional[int] = None
     parent_id: Optional[int] = None
     created_at: datetime
+    owner: UserOut
 
     model_config = ConfigDict(from_attributes=True)
 

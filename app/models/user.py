@@ -16,6 +16,10 @@ class User(Base):
     is_active = Column(Boolean, default=True)
     is_admin = Column(Boolean, default=False)
     created_at = Column(DateTime, default=func.now())
+    posts_count = Column(Integer, default=0, nullable=True)
+    reels_count = Column(Integer, default=0, nullable=True)
+    stories_count = Column(Integer, default=0, nullable=True)
+    has_active_story = Column(Boolean, default=False, nullable=True)
 
     # Relationships
     posts = relationship("Post", back_populates="owner")

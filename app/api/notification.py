@@ -10,6 +10,7 @@ from app.models.user import User
 from app.schemas.notification import NotificationOut
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.database import get_async_session
+from app.schemas.user import UserOut
 
 router = APIRouter(prefix="/notifications", tags=["Notifications"])
 
@@ -22,7 +23,7 @@ async def get_my_notifications(
     db: AsyncSession = Depends(get_async_session)
 ):
     notifications = await get_user_notifications(current_user.id, skip, limit, db)
-    return [NotificationOut.model_validate(n, from_attributes=True) for n in notifications]
+    return [NotificationOut(**n) for n in notifications]
 
     
 @router.post("/{notification_id}/read")

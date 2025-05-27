@@ -16,6 +16,7 @@ class LoginRequest(BaseModel):
 
 class UserUpdate(BaseModel):
     email: Optional[EmailStr] = None
+    username: Optional[str] = None
     full_name: Optional[str] = None
     bio: Optional[str] = None
     profile_picture: Optional[str] = None
@@ -26,9 +27,14 @@ class UserOut(BaseModel):
     username: str
     email: str
     profile_picture: Optional[str] = None
+    full_name: Optional[str] = None
     bio: Optional[str] = None
     is_active: Optional[bool] = None
+    is_admin: Optional[bool] = None
     created_at: Optional[datetime] = None
+    followers_count: Optional[int] = None
+    following_count: Optional[int] = None
+    is_followed_by_current_user: Optional[bool] = None
 
     model_config = ConfigDict(from_attributes=True)
 
